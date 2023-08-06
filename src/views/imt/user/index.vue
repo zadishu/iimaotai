@@ -182,7 +182,7 @@
         <el-form-item label="预约时间" prop="minute">
           <el-slider v-model="form.minute" :min="5" :max="50" :format-tooltip="formatTooltip"></el-slider>
         </el-form-item>
-        <el-form-item label="当前城市" prop="address">
+        <el-form-item label="取货城市" prop="address">
           <el-cascader
             v-model="selectedCities"
             :options="options"
@@ -423,7 +423,11 @@ export default {
         this.open = true
         this.title = '修改I茅台用户'
         this.itemSelect = []
-        this.selectedCities = response.data.address.match(/(.*?[省市])?(.*?[市区])(.*)/).slice(1)
+        if (response.data.address) {
+          this.selectedCities = response.data.address.match(/(.*?[省市])?(.*?[市区])(.*)/).slice(1)
+        } else {
+          this.selectedCities = []
+        }
         if (this.form.itemCode.indexOf('@') == -1 && this.form.itemCode !== '') {
           this.itemSelect.push(this.form.itemCode)
         } else {
@@ -512,17 +516,11 @@ export default {
     handleChange(value) {
       listShop({ pageNum: 1, pageSize: 10, provinceName: value[0], cityName: value[1], districtName: value[2] }).then(
         (response) => {
-          if (response.total != '0') {
-            this.form.ishopId =
-              response.rows[
-                Math.floor(Math.random() * parseInt(response.total > 10 ? 10 : response.total)) + 1 - 1
-              ].ishopId
-            this.form.address = value[0] + value[1] + value[2]
-          } else {
-            this.$modal.msgError('该区没有茅台门店')
-            this.selectedCities = []
-            this.form.address = ''
-          }
+          this.form.ishopId =
+            response.rows[
+              Math.floor(Math.random() * parseInt(response.total > 10 ? 10 : response.total)) + 1 - 1
+            ].ishopId
+          this.form.address = value[0] + value[1] + value[2]
         },
       )
     },
