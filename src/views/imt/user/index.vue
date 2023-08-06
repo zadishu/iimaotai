@@ -59,7 +59,6 @@
           >删除</el-button
         >
       </el-col>
-
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -293,7 +292,7 @@ export default {
       refreshToken: false,
       // 发送短信按钮倒计时
       state: false,
-      stateNum: 60,
+      stateNum: 0,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -524,6 +523,7 @@ export default {
     //登录
     login(mobile, code) {
       this.refresh(mobile, code, this.form.deviceId, 0)
+      this.openUser = false
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -543,8 +543,8 @@ export default {
       const msg = status ? '刷新成功' : '登录成功'
       login(mobile, code, deviceId).then((response) => {
         this.$modal.msgSuccess(msg)
-        this.open = false
         this.openUser = false
+        this.refreshToken = false
         this.getList()
       })
     },
