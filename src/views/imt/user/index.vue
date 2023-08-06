@@ -153,6 +153,9 @@
           <el-button size="mini" type="text" icon="el-icon-thumb" @click="reservation(scope.row)">预约</el-button>
           <el-button size="mini" type="text" icon="el-icon-thumb" @click="travelReward(scope.row)">旅行</el-button>
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-refresh" @click="handleUpdateToken(scope.row)">
+            刷新token
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -210,16 +213,36 @@
         <el-form-item label="手机号" prop="mobile">
           <el-input v-model="form.mobile" placeholder="请输入I茅台用户手机号" />
           <div style="margin-top: 10px">
-            <el-button type="primary" @click="sendCode(form.mobile)">发送验证码</el-button>
+            <el-button type="primary" @click="sendCode(form.mobile)" :disabled="state"
+              >发送验证码<span v-if="state">({{ stateNum }})</span>
+            </el-button>
           </div>
         </el-form-item>
-
         <el-form-item label="验证码" prop="userId">
           <el-input v-model="form.code" placeholder="请输入验证码" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="login(form.mobile, form.code)">登 录</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog :title="title" :visible.sync="refreshToken" width="500px">
+      <el-form ref="form" :model="form">
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="form.mobile" readonly placeholder="请输入I茅台用户手机号" />
+          <div style="margin-top: 10px">
+            <el-button type="primary" @click="sendCode(form.mobile, form.deviceId)" :disabled="state"
+              >发送验证码<span v-if="state">({{ stateNum }})</span>
+            </el-button>
+          </div>
+        </el-form-item>
+        <el-form-item label="验证码" prop="code">
+          <el-input v-model="form.code" placeholder="请输入验证码" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="refresh(form.mobile, form.code, form.deviceId, 1)">刷 新 </el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -267,6 +290,10 @@ export default {
       // 是否显示弹出层
       open: false,
       openUser: false,
+      refreshToken: false,
+      // 发送短信按钮倒计时
+      state: false,
+      stateNum: 60,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -357,6 +384,7 @@ export default {
     cancel() {
       this.open = false
       this.openUser = false
+      this.refreshToken = false
       this.reset()
     },
     // 表单重置
@@ -479,20 +507,23 @@ export default {
       })
     },
     //发生验证码
-    sendCode(mobile) {
-      this.form.deviceId = this.guid()
+    sendCode(mobile, deviceId) {
+      this.form.deviceId = deviceId == '' ? this.guid() : deviceId
       sendCode(mobile, this.form.deviceId).then((response) => {
         this.$modal.msgSuccess('发送成功')
+        this.state = true
+        let timer = setInterval(() => {
+          this.stateNum--
+          if (this.stateNum === 0) {
+            clearInterval(timer)
+            this.state = false
+          }
+        }, 1000)
       })
     },
     //登录
     login(mobile, code) {
-      login(mobile, code, this.form.deviceId).then((response) => {
-        this.$modal.msgSuccess('登录成功')
-        this.open = false
-        this.openUser = false
-        this.getList()
-      })
+      this.refresh(mobile, code, this.form.deviceId, 0)
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -507,6 +538,23 @@ export default {
           this.$modal.msgSuccess('删除成功')
         })
         .catch(() => {})
+    },
+    refresh(mobile, code, deviceId, status) {
+      const msg = status ? '刷新成功' : '登录成功'
+      login(mobile, code, deviceId).then((response) => {
+        this.$modal.msgSuccess(msg)
+        this.open = false
+        this.openUser = false
+        this.getList()
+      })
+    },
+    handleUpdateToken(row) {
+      this.refreshToken = true
+      this.form = {
+        mobile: row.mobile,
+        deviceId: row.deviceId,
+      }
+      this.title = '刷新用户:' + row.remark + '(' + row.mobile + ')登录信息'
     },
     formatTooltip(val) {
       const hour = 9
