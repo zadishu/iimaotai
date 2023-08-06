@@ -2,30 +2,23 @@
 
 ## 开发
 
-```bash
-# 克隆项目
+# 好用的话点个START
+# 好用的话点个START
+# 好用的话点个START
 
-# 进入项目目录
-cd campus-ui
+# 二开功能
+1.限制注册用户的新增小茅用户额度
+2.修改小茅用户信息面板美化
+3.删除注册用户，一并删除二级用户创建的小茅用户
 
-# 安装依赖
-npm install
+# 源码原作者:orrder
+友情链接:https://github.com/oddfar/campus-imaotai
 
-# 建议不要直接使用 cnpm 安装依赖，会有各种诡异的 bug。可以通过如下操作解决 npm 下载速度慢的问题
-npm install --registry=https://registry.npmmirror.com
+# 前端二开作者:北恒
+友情链接:https://github.com/Abeiheng/iimaotai
 
-# 启动服务
-npm run dev
-```
-
-浏览器访问 http://localhost:1024
-
-## 发布
-
-```bash
-# 构建测试环境
-npm run build:stage
-
-# 构建生产环境
-npm run build:prod
-```
+# 使用方法
+1.克隆下来
+2.npm i
+3.npm run build:prod
+4.把dist文件夹上传到docker文件夹下html中的dist
