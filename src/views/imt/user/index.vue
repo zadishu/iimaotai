@@ -507,7 +507,11 @@ export default {
     },
     //发生验证码
     sendCode(mobile, deviceId) {
-      this.form.deviceId = deviceId == '' ? this.guid() : deviceId
+      if (deviceId == undefined || deviceId == '') {
+        this.form.deviceId = this.guid()
+      } else {
+        this.form.deviceId = deviceId
+      }
       sendCode(mobile, this.form.deviceId).then((response) => {
         this.$modal.msgSuccess('发送成功')
         this.state = true
