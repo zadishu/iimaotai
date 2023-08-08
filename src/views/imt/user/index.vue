@@ -284,7 +284,7 @@ export default {
       refreshToken: false,
       // 发送短信按钮倒计时
       state: false,
-      stateNum: 0,
+      stateNum: 30,
       // 查询参数
       queryParams: {
         pageNum: 1,
