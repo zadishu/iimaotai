@@ -44,7 +44,9 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddIUser">添加账号(剩余小茅额度:{{ $store.getters.remark }}次)</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddIUser"
+          >添加账号(剩余小茅额度:{{ $store.getters.remark - userList.length }}次)</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
