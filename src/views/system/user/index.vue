@@ -262,7 +262,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="用户额度">
-              <el-input v-model="form.remark" placeholder="请输入用户额度(不填默认为3次)"></el-input>
+              <el-input v-model="form.remark" placeholder="请输入用户额度(不填默认为1次)"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

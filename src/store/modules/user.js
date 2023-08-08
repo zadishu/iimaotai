@@ -77,7 +77,7 @@ const user = {
             if (user.remark) {
               commit('SET_REMARK', user.remark)
             } else {
-              commit('SET_REMARK', '3')
+              commit('SET_REMARK', '1')
             }
             commit('SET_AVATAR', avatar)
             resolve(res)

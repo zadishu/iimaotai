@@ -44,15 +44,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAddIUser" v-if="newAddBtn"
-          >添加账号</el-button
-        >
-      </el-col>
-
-      <el-col :span="1.5">
-        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
-          >修改</el-button
-        >
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddIUser">添加账号(剩余小茅额度:{{ $store.getters.remark }}次)</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
@@ -437,8 +429,19 @@ export default {
       this.itemSelect = []
     },
     handleAddIUser() {
-      this.reset()
-      this.openUser = true
+      if (this.newAddBtn) {
+        this.reset()
+        this.openUser = true
+      } else {
+        this.$alert(
+          '<p>您的小茅用户额度已耗完~</p><p>请<span style="color:red">联系客服充值</span>或<span style="color:red">自行删除之前的小茅用户</span></p>',
+          '提示',
+          {
+            dangerouslyUseHTMLString: true,
+            confirmButtonText: '确定',
+          },
+        )
+      }
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
