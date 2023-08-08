@@ -593,7 +593,6 @@ export default {
         res.rows.forEach((row) => {
           getUserDel(row.mobile)
         })
-        debugger
         if (res.total > pageSize * pageNum) {
           return this.fetchUserList(pageNum, pageSize, userIds) // 递归调用获取下一页的用户列表
         } else {

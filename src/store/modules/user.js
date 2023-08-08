@@ -57,7 +57,6 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo()
           .then((res) => {
-            debugger
             const user = res.user
             let avatar = user.avatar
             if (user.avatar.trim().toLowerCase().substring(0, 4) != 'http') {
