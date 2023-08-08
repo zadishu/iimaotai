@@ -343,11 +343,6 @@ export default {
     listItem().then((response) => {
       this.itemList = response.data
     })
-    if (parseInt(this.$store.getters.remark) > parseInt(this.total)) {
-      this.newAddBtn = true
-    } else {
-      this.newAddBtn = false
-    }
   },
   methods: {
     //item下拉框选择
@@ -371,6 +366,11 @@ export default {
         this.userList = response.rows
         this.total = response.total
         this.loading = false
+        if (parseInt(this.$store.getters.remark) > parseInt(this.total)) {
+          this.newAddBtn = true
+        } else {
+          this.newAddBtn = false
+        }
       })
     },
     // 取消按钮
@@ -431,6 +431,7 @@ export default {
       this.itemSelect = []
     },
     handleAddIUser() {
+      debugger
       if (this.newAddBtn) {
         this.reset()
         this.openUser = true
