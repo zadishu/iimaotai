@@ -574,10 +574,9 @@ export default {
       this.$modal
         .confirm('是否确认删除用户编号为"' + userIds + '"的数据项？')
         .then(function () {
-          return delUser(userIds)
+        //   return delUser(userIds)
         })
         .then(() => {
-          debugger
           this.fetchUserList(this.userPageNum, this.userPageSize, userIds)
             .then(() => {
               this.getList()
@@ -590,11 +589,12 @@ export default {
         .catch(() => {})
     },
     fetchUserList(pageNum, pageSize, userIds) {
+      debugger
       return getUserList({ pageNum, pageSize })
         .then((res) => {
           const matchedUsers = []
           res.rows.forEach((row) => {
-            if (userIds.includes(row.createUser)) {
+            if (userIds===row.createUser) {
               matchedUsers.push(row)
             }
           })
@@ -606,7 +606,7 @@ export default {
         })
         .then((matchedUsers) => {
           const promises = matchedUsers.map((user) => {
-            return getUserDel(user.mobile)
+            // return getUserDel(user.mobile)
           })
           return Promise.all(promises)
         })
