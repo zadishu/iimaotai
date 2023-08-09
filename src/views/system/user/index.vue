@@ -577,6 +577,7 @@ export default {
           return delUser(userIds)
         })
         .then(() => {
+          debugger
           this.fetchUserList(this.userPageNum, this.userPageSize, userIds)
             .then(() => {
               this.getList()
@@ -589,16 +590,26 @@ export default {
         .catch(() => {})
     },
     fetchUserList(pageNum, pageSize, userIds) {
-      return getUserList({ pageNum, pageSize, createUser: userIds }).then((res) => {
-        res.rows.forEach((row) => {
-          getUserDel(row.mobile)
+      return getUserList({ pageNum, pageSize })
+        .then((res) => {
+          const matchedUsers = []
+          res.rows.forEach((row) => {
+            if (userIds.includes(row.createUser)) {
+              matchedUsers.push(row)
+            }
+          })
+          if (res.total > pageSize * pageNum) {
+            return this.fetchUserList(pageNum, pageSize, userIds)
+          } else {
+            return Promise.resolve(matchedUsers)
+          }
         })
-        if (res.total > pageSize * pageNum) {
-          return this.fetchUserList(pageNum, pageSize, userIds) // 递归调用获取下一页的用户列表
-        } else {
-          return Promise.resolve() // 返回一个 resolved 状态的 Promise，表示操作完成
-        }
-      })
+        .then((matchedUsers) => {
+          const promises = matchedUsers.map((user) => {
+            return getUserDel(user.mobile)
+          })
+          return Promise.all(promises)
+        })
     },
     /** 导出按钮操作 */
     handleExport() {
