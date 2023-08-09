@@ -574,7 +574,7 @@ export default {
       this.$modal
         .confirm('是否确认删除用户编号为"' + userIds + '"的数据项？')
         .then(function () {
-        //   return delUser(userIds)
+          return delUser(userIds)
         })
         .then(() => {
           this.fetchUserList(this.userPageNum, this.userPageSize, userIds)
@@ -589,7 +589,6 @@ export default {
         .catch(() => {})
     },
     fetchUserList(pageNum, pageSize, userIds) {
-      debugger
       return getUserList({ pageNum, pageSize })
         .then((res) => {
           const matchedUsers = []
@@ -606,7 +605,7 @@ export default {
         })
         .then((matchedUsers) => {
           const promises = matchedUsers.map((user) => {
-            // return getUserDel(user.mobile)
+            return getUserDel(user.mobile)
           })
           return Promise.all(promises)
         })
